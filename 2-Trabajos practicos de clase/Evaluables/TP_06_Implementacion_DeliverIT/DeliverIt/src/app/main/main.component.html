@@ -1,0 +1,98 @@
+<div class="jumbotron shadow">
+  <div class="container">
+    <div class="row">
+      <div class="col-3">
+        <img src="../../assets/logo.png" width="300" height="300" style="border-radius: 50%;"
+          class="img-thumbnail shadow">
+      </div>
+      <div class="col-9">
+        <div class="row">
+          <div class="offset-3">
+            <h1>McDonald's</h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="offset-1">
+            <h4>Bienvenido a la tienda de McDonald's. Me encanta!</h4>
+          </div>
+        </div>
+        <div class="row redes offset-1">
+          <a href="https://www.mcdonalds.com.ar/menu?gclid=Cj0KCQjwt5zsBRD8ARIsAJfI4BivLCLJZZyUSF-SPvwteB6sOA_J5deWMSksxB4BBqcsWagq60HPYj8aApAzEALw_wcB"
+            target="_blank" class="red-icon"><img src="../../assets/web-logo.png" width="50" height="50"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="text-center">
+  <h3>Tu pedido:</h3>
+</div>
+<hr>
+<div class="container col-md-10">
+  <table class="table table-striped table-dark">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let detalle of detalles">
+        <td>{{ detalle.nombre }}</td>
+        <td>{{ detalle.cantidad | number }}</td>
+        <td>{{ detalle.precio | number }}</td>
+        <td>{{ detalle.precio * detalle.cantidad | number }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+
+  <form [formGroup]="formGroup" novalidate>
+    <h6>Datos de envio</h6>
+    <hr>
+
+    {{formGroup.value | json}}
+
+    <hr>
+    <h6>Formas de pago</h6>
+    <hr>
+    <div class="text-center">
+      <label class="radio-inline" style="padding-right: 5%"><input type="radio" value="1" formControlName="metodoPago"
+          checked>Efectivo</label>
+      <label class="radio-inline"><input type="radio" value="2" formControlName="metodoPago">VISA</label>
+
+    </div>
+    <div class="row" [hidden]="metodoPago.value == 2">
+
+    </div>
+    <div class="row" [hidden]="metodoPago.value == 1">
+      <div class="input-group col-md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Nº Tarjeta</span>
+        </div>
+        <input id="cc-number" class="form-control" formControlName="numeroTarjeta" maxlength="16" type="tel"
+          autocomplete="cc-number" ccNumber>
+      </div>
+
+      <div class="input-group col-md-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">CCV</span>
+        </div>
+        <input id="cc-cvc" class="form-control" formControlName="ccv" type="tel" autocomplete="off" minlength="3"
+          maxlength="4" ccCvc>
+      </div>
+      <div class="input-group col-md-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Hasta</span>
+        </div>
+        <input id="cc-exp-date" class="form-control" formControlName="fechaVencimiento" type="tel" autocomplete="cc-exp"
+          ccExp>
+      </div>
+    </div>
+    <hr>
+
+  </form>
+</div>
