@@ -29,8 +29,14 @@
   <h3>Tu pedido:</h3>
 </div>
 <hr>
-<div class="container col-md-10">
-  <table class="table table-striped table-dark">
+<div class="container col-md-10" [hidden]="detalles.length">
+  <div class="text-center">
+      <h5>Tu carro esta vacio, debes seleccionar algun producto para proceder con tu pedido.</h5>
+    <button class="btn btn-bordered-primary" (click)="volver()">Volver</button>
+  </div>
+</div>
+<div class="container col-md-10" [hidden]="!detalles.length">
+  <table class="table table-striped table-bordered">
     <thead>
       <tr>
         <th>Nombre</th>
@@ -53,28 +59,90 @@
   <form [formGroup]="formGroup" novalidate>
     <h6>Datos de envio</h6>
     <hr>
+    <div class="row">
+      <div class="input-group col-md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Ciudad</span>
+        </div>
+        <select class="form-control input-group-append" formControlName="ciudad">
+          <option>Seleccione...</option>
+          <option *ngFor="let ciudad of ciudades">{{ciudad}}</option>
+        </select>
+      </div>
 
-    {{formGroup.value | json}}
+
+      <div class="input-group col-md-6">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Calle</span>
+        </div>
+        <input type="text" min="0" placeholder="Ej. Cruz roja" class="form-control" formControlName="calle"
+          [ngStyle]="{'border-color': calle.dirty && calle.invalid ? 'red':''}">
+      </div>
+      <div class="input-group col-md-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Nº</span>
+        </div>
+        <input type="number" min="0" class="form-control" placeholder="Ej. 1330" formControlName="numeroCalle"
+          maxlength="16" [ngStyle]="{'border-color': numeroCalle.dirty && numeroCalle.invalid ? 'red':''}">
+      </div>
+    </div>
+    <div class="row" style="padding-top:1%">
+
+      <div class="input-group col-md-12">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Referencia</span>
+        </div>
+        <textarea class="form-control" formControlName="referencia" placeholder="Ej. Casa esquina porton negro"
+          maxlength="300" [ngStyle]="{'border-color': referencia.dirty && referencia.invalid ? 'red':''}"></textarea>
+      </div>
+    </div>
+
+    
+
+    <div class="text-center" style="padding-top:1%">
+      <iframe src="http://maps.google.com/maps?q=-31.4423351,-64.1924224&z=15&output=embed" width="360" height="270"
+        frameborder="0" style="border:0"></iframe>
+    </div>
 
     <hr>
     <h6>Formas de pago</h6>
     <hr>
     <div class="text-center">
       <label class="radio-inline" style="padding-right: 5%"><input type="radio" value="1" formControlName="metodoPago"
-          checked>Efectivo</label>
-      <label class="radio-inline"><input type="radio" value="2" formControlName="metodoPago">VISA</label>
-
+          (change)="onMetodoPagoChange()" checked>Efectivo</label>
+      <label class="radio-inline"><input type="radio" value="2" formControlName="metodoPago"
+          (change)="onMetodoPagoChange()">VISA</label>
     </div>
-    <div class="row" [hidden]="metodoPago.value == 2">
+    <!-- Efectivo -->
+    <div class="row" [hidden]="metodoPago.value == 2" style="padding-bottom: 1%">
+      <div class="input-group col-md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Monto a pagar ($)</span>
+        </div>
+        <input type="number" min="0" placeholder="" [min]="total" class="form-control" placeholder="0" formControlName="monto"
+          maxlength="16" [ngStyle]="{'border-color': monto.dirty && monto.invalid ? 'red':''}">
 
+        <div class="input-group-append">
+          <span class="input-group-text" id="basic-addon1">/ ${{total | number}}</span>
+        </div>
+      </div>
     </div>
-    <div class="row" [hidden]="metodoPago.value == 1">
+    <!-- VISA -->
+    <div class="row" [hidden]="metodoPago.value == 1" style="padding-bottom: 1%;">
+      <div class="input-group col-md-4">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Titular</span>
+        </div>
+        <input class="form-control" formControlName="titular" type="text" placeholder="Nombre y Apellido"
+          [ngStyle]="{'border-color': titular.dirty && titular.invalid ? 'red':''}">
+      </div>
       <div class="input-group col-md-4">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Nº Tarjeta</span>
         </div>
-        <input id="cc-number" class="form-control" formControlName="numeroTarjeta" maxlength="16" type="tel"
-          autocomplete="cc-number" ccNumber>
+        <input id="cc-number" class="form-control" formControlName="numeroTarjeta" maxlength="20" type="tel"
+          autocomplete="cc-number" ccNumber placeholder="XXXX XXXX XXXX XXXX"
+          [ngStyle]="{'border-color': numeroTarjeta.dirty && numeroTarjeta.invalid ? 'red':''}">
       </div>
 
       <div class="input-group col-md-2">
@@ -82,17 +150,20 @@
           <span class="input-group-text" id="basic-addon1">CCV</span>
         </div>
         <input id="cc-cvc" class="form-control" formControlName="ccv" type="tel" autocomplete="off" minlength="3"
-          maxlength="4" ccCvc>
+          maxlength="4" ccCvc placeholder="XXX" [ngStyle]="{'border-color': ccv.dirty && ccv.invalid ? 'red':''}">
       </div>
-      <div class="input-group col-md-3">
+      <div class="input-group col-md-2">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Hasta</span>
         </div>
         <input id="cc-exp-date" class="form-control" formControlName="fechaVencimiento" type="tel" autocomplete="cc-exp"
-          ccExp>
+          ccExp placeholder="XX/XXXX"
+          [ngStyle]="{'border-color': fechaVencimiento.dirty && fechaVencimiento.invalid ? 'red':''}">
       </div>
     </div>
-    <hr>
-
+    <div class="modal-footer">
+      <button class="btn btn-primary" [disabled]="formGroup.invalid">Aceptar</button>
+      <button class="btn btn-secondary">Cancelar</button>
+    </div>
   </form>
 </div>

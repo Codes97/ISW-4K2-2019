@@ -4,6 +4,7 @@ import { MainComponent } from './main/main.component';
 
 const routes: Routes = [
   {path: '**', component: MainComponent}
+
 ];
 
 @NgModule({

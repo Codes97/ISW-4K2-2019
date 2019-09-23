@@ -12,9 +12,9 @@ export class DetalleService {
 
 
 
-  generateList(length:number){
+  generateList(){
     let list = []
-    for (let index = 0; index < length; index++) {
+    for (let index = 0; index < this.getRandomInt(0,5); index++) {
       list.push(this.generateRandomDetail());
     }
     return list;
@@ -22,7 +22,7 @@ export class DetalleService {
 
   generateRandomDetail() {
     const names = ['Cajita feliz','Coca-Cola Light','McNIFICA', 'Pepsi', 'Coca-Cola', 'Cuarto de libra', 'Doble cuarto de libra', 'Big Mac'];
-    const detalle = new Detalle(names[this.getRandomInt(0,names.length-1)],this.getRandomInt(1,3), Math.round(Math.random()*1000)/10);
+    const detalle = new Detalle(names[this.getRandomInt(0,names.length-1)],this.getRandomInt(1,3), Math.round(Math.random()*1000)/100);
     return detalle;
   }
   getRandomInt(min, max) {
