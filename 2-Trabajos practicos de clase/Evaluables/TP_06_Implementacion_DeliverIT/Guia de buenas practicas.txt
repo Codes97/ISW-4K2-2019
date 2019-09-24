@@ -1,0 +1,3 @@
+La guia de buenas practicas utilizada en este trabajo practico se puede encontrar en la siguiente pagina:
+
+https://github.com/airbnb/javascript/blob/master/README.md
