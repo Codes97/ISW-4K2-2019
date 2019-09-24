@@ -8,7 +8,7 @@
     <label class="text-center">Tus productos serán enviados a {{ciudad}}, calle {{calle}} {{numeroCalle}} 
       <span [hidden]="entregaRapida">el día {{fechaEntrega | date: 'dd/MM/yyyy'}} a las {{horaEntrega}} hs</span>
       <span [hidden]="!entregaRapida">de inmediato</span>.
-      {{metodoPago=="1" ? 'El pago se realizará en efectivo y tu vuelto sera $'+(monto-total):'El monto $'+total+' será descontado de la
+      {{metodoPago=="1" ? 'El pago se realizará en efectivo y tu vuelto sera $'+(vuelto):'El monto $'+total+' será descontado de la
        tarjeta VISA que ingresaste y podrás verlo en tu resumen de este ciclo'}}. Puedes ir a <b>Mis pedidos</b> para hacer un seguimiento del pedido.
        </label>
       <h6 class="text-center">Gracias por utilizar nuestros servicios!</h6>

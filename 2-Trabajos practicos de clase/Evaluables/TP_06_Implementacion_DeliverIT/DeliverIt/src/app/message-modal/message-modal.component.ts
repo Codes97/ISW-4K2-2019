@@ -15,6 +15,7 @@ export class MessageModalComponent implements OnInit {
   referencia:string;
   metodoPago:string;
   monto:number;
+  vuelto:number;
   total:number;
   entregaRapida:boolean;
   fechaEntrega:Date;

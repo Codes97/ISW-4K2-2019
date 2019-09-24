@@ -121,7 +121,8 @@ export class MainComponent implements OnInit {
     modalReference.componentInstance.calle = this.calle.value;
     modalReference.componentInstance.referencia = this.referencia.value;
     modalReference.componentInstance.metodoPago = this.metodoPago.value;
-    modalReference.componentInstance.monto = this.monto.value;
+    modalReference.componentInstance.monto = (Math.round(this.monto.value*100)/100);
+    modalReference.componentInstance.vuelto = (Math.round((this.monto.value-this.total)*100)/100);
     modalReference.componentInstance.total = this.total;
     modalReference.componentInstance.entregaRapida = this.entregaRapida.value;
     modalReference.componentInstance.fechaEntrega = this.fechaEntrega.value;
