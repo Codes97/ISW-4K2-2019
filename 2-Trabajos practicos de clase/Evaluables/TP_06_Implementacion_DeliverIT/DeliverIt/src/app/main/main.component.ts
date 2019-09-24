@@ -83,7 +83,7 @@ export class MainComponent implements OnInit {
       this.monto.clearValidators();
 
       //Seteamos validadores
-      this.numeroTarjeta.setValidators([Validators.required, CreditCardValidator.validateCCNumber, Validators.pattern(new RegExp('^4[0-9]{12}(?:[0-9]{3})?$'))]);
+      this.numeroTarjeta.setValidators([Validators.required, CreditCardValidator.validateCCNumber, Validators.pattern(new RegExp('^4[0-9]{3} [0-9]{4} [0-9]{4} [0-9]{1}(?:[0-9]{3})?$'))]);
       this.fechaVencimiento.setValidators([Validators.required, CreditCardValidator.validateExpDate]);
       this.ccv.setValidators([Validators.required, Validators.minLength(3), Validators.maxLength(4)]);
       this.titular.setValidators([Validators.required, Validators.minLength(5)]);
