@@ -1,0 +1,19 @@
+<div class="card">
+  <div class="card-header">
+    <div class="text-center">
+        <h2>Tu producto esta en camino!</h2>
+    </div>
+  </div>
+  <div class="card-body">
+    <label class="text-center">Tus productos seran enviados a {{ciudad}}, calle {{calle}} {{numeroCalle}} 
+      <span [hidden]="entregaRapida">el dia {{fechaEntrega | date: 'dd/MM/yyyy'}} a las {{horaEntrega}} hs</span>
+      <span [hidden]="!entregaRapida">de inmediato</span>.
+      {{metodoPago=="1" ? 'El pago se realizara en efectivo y tu vuelto sera $'+(monto-total):'El monto $'+total+' sera descontado de la
+       tarjeta VISA que ingresaste y podras verlo en tu resumen de este ciclo'}}. Puedes ir a <b>Mis pedidos</b> para hacer un seguimiento del pedido.
+       </label>
+      <h6 class="text-center">Gracias por utilizar nuestros servicios!</h6>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" (click)="activeModal.close()">Aceptar</button>
+  </div>
+</div>

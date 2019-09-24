@@ -23,7 +23,7 @@ export class DetalleService {
 
   generateHoursList(){
     let list = [];
-    let hora = new Date().getHours();
+    let hora = new Date().getHours()+1;
     console.log(hora);
 
     for (let i = hora; i < 24; i++) {

@@ -3,6 +3,8 @@ import { Detalle } from '../model/detalle';
 import { DetalleService } from '../services/detalle.service';
 import { FormBuilder, FormGroup, Validators, } from '@angular/forms';
 import { CreditCardValidator } from 'angular-cc-library';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MessageModalComponent } from '../message-modal/message-modal.component';
 
 
 @Component({
@@ -20,7 +22,8 @@ export class MainComponent implements OnInit {
   formGroup: FormGroup;
   detalles: Detalle[];
   constructor(private service: DetalleService,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder,
+    private modal: NgbModal) { }
 
   ngOnInit() {
     this.detalles = this.service.generateList();
@@ -111,6 +114,23 @@ export class MainComponent implements OnInit {
     this.horaEntrega.updateValueAndValidity();
   }
 
+  openModal(){
+    let modalReference = this.modal.open(MessageModalComponent, { size: 'lg', keyboard: true });
+    modalReference.componentInstance.ciudad = this.ciudad.value;
+    modalReference.componentInstance.numeroCalle = this.numeroCalle.value;
+    modalReference.componentInstance.calle = this.calle.value;
+    modalReference.componentInstance.referencia = this.referencia.value;
+    modalReference.componentInstance.metodoPago = this.metodoPago.value;
+    modalReference.componentInstance.monto = this.monto.value;
+    modalReference.componentInstance.total = this.total;
+    modalReference.componentInstance.entregaRapida = this.entregaRapida.value;
+    modalReference.componentInstance.fechaEntrega = this.fechaEntrega.value;
+    modalReference.componentInstance.horaEntrega = this.horaEntrega.value;
+    modalReference.result.then((data)=>{
+      setTimeout(()=>{location.reload(true)}, 2);
+    });
+  }
+
 
   get ciudad(){
     return this.formGroup.get("ciudad");
@@ -142,15 +162,12 @@ export class MainComponent implements OnInit {
   get ccv(){
     return this.formGroup.get("ccv");
   }
-  
   get entregaRapida(){
     return this.formGroup.get("entregaRapida");
   }
-  
   get fechaEntrega(){
     return this.formGroup.get("fechaEntrega");
   }
-  
   get horaEntrega(){
     return this.formGroup.get("horaEntrega");
   }
