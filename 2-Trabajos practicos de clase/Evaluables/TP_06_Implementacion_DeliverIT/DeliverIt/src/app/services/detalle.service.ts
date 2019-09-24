@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Detalle } from '../model/detalle';
+import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
 
 
 
@@ -14,11 +15,27 @@ export class DetalleService {
 
   generateList(){
     let list = []
-    for (let index = 0; index < this.getRandomInt(0,5); index++) {
+    for (let index = 0; index < this.getRandomInt(1,5); index++) {
       list.push(this.generateRandomDetail());
     }
     return list;
-  }  
+  }
+
+  generateHoursList(){
+    let list = [];
+    let hora = new Date().getHours();
+    console.log(hora);
+
+    for (let i = hora; i < 24; i++) {
+      for (let j = 0; j < 2; j++) {
+        let minute = (i==23) ? ':00':(j*30) == 0 ? ':00':':30';
+        let addCero = (i+1)<10 ? '0':'';
+        list.push(addCero+(i+1).toString()+minute);
+        if(i==23) break;
+      }
+    }
+    return list
+  }
 
   generateRandomDetail() {
     const names = ['Cajita feliz','Coca-Cola Light','McNIFICA', 'Pepsi', 'Coca-Cola', 'Cuarto de libra', 'Doble cuarto de libra', 'Big Mac'];

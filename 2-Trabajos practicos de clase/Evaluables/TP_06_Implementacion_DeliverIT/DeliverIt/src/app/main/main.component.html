@@ -31,7 +31,7 @@
 <hr>
 <div class="container col-md-10" [hidden]="detalles.length">
   <div class="text-center">
-      <h5>Tu carro esta vacio, debes seleccionar algun producto para proceder con tu pedido.</h5>
+    <h5>Tu carro esta vacio, debes seleccionar algun producto para proceder con tu pedido.</h5>
     <button class="btn btn-bordered-primary" (click)="volver()">Volver</button>
   </div>
 </div>
@@ -43,6 +43,7 @@
         <th>Cantidad</th>
         <th>Precio</th>
         <th>Total</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -51,6 +52,7 @@
         <td>{{ detalle.cantidad | number }}</td>
         <td>{{ detalle.precio | number }}</td>
         <td>{{ detalle.precio * detalle.cantidad | number }}</td>
+        <td><button class="btn btn-outline-danger" (click)="eliminarProducto(detalle)">X</button></td>
       </tr>
     </tbody>
   </table>
@@ -64,9 +66,10 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Ciudad</span>
         </div>
-        <select class="form-control input-group-append" formControlName="ciudad">
-          <option>Seleccione...</option>
-          <option *ngFor="let ciudad of ciudades">{{ciudad}}</option>
+        <select class="form-control input-group-append" formControlName="ciudad"
+        [ngStyle]="{'border-color': ciudad.touched && ciudad.invalid ? 'red':''}">
+          <option value="">Seleccione...</option>
+          <option *ngFor="let ciudad of ciudades" [ngValue]="ciudad">{{ciudad}}</option>
         </select>
       </div>
 
@@ -76,14 +79,14 @@
           <span class="input-group-text" id="basic-addon1">Calle</span>
         </div>
         <input type="text" min="0" placeholder="Ej. Cruz roja" class="form-control" formControlName="calle"
-          [ngStyle]="{'border-color': calle.dirty && calle.invalid ? 'red':''}">
+          [ngStyle]="{'border-color': calle.touched && calle.invalid ? 'red':''}">
       </div>
       <div class="input-group col-md-2">
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Nº</span>
         </div>
         <input type="number" min="0" class="form-control" placeholder="Ej. 1330" formControlName="numeroCalle"
-          maxlength="16" [ngStyle]="{'border-color': numeroCalle.dirty && numeroCalle.invalid ? 'red':''}">
+          maxlength="16" [ngStyle]="{'border-color': numeroCalle.touched && numeroCalle.invalid ? 'red':''}">
       </div>
     </div>
     <div class="row" style="padding-top:1%">
@@ -93,11 +96,40 @@
           <span class="input-group-text" id="basic-addon1">Referencia</span>
         </div>
         <textarea class="form-control" formControlName="referencia" placeholder="Ej. Casa esquina porton negro"
-          maxlength="300" [ngStyle]="{'border-color': referencia.dirty && referencia.invalid ? 'red':''}"></textarea>
+          maxlength="300" [ngStyle]="{'border-color': referencia.touched && referencia.invalid ? 'red':''}"></textarea>
       </div>
     </div>
 
-    
+    <div class="row" style="padding-top: 1%">
+      <div class="input-group col-md-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Entrega inmediata</span>
+        </div>
+        <div class="input-group-append">
+          <button class="input-group btn"
+            [ngClass]="{'btn-outline-success': entregaRapida.value, 'btn-outline-secondary':!entregaRapida.value}"
+            (click)="switchEntregaRapida()">{{entregaRapida.value ? 'Yes.':'No.'}}</button>
+        </div>
+
+      </div>
+      <div class="input-group col-md-3" [hidden]="entregaRapida.value">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Fecha</span>
+        </div>
+        <input type="date" class="form-control" formControlName="fechaEntrega" min="{{minPickerDate | date:'yyyy-MM-dd'}}" value="{{minPickerDate | date:'yy-MM-dd'}}"
+          [ngStyle]="{'border-color': fechaEntrega.touched && fechaEntrega.invalid ? 'red':''}">
+      </div>
+      <div class="input-group col-md-3" [hidden]="entregaRapida.value">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Hora</span>
+        </div>
+        <select class="form-control" formControlName="horaEntrega" [ngStyle]="{'border-color': horaEntrega.touched && horaEntrega.invalid ? 'red':''}">
+          <option value="">Seleccione...</option>
+          <option *ngFor="let hora of listaHoras" [ngValue]="hora">{{hora}}</option>
+        </select>
+      </div>
+    </div>
+
 
     <div class="text-center" style="padding-top:1%">
       <iframe src="http://maps.google.com/maps?q=-31.4423351,-64.1924224&z=15&output=embed" width="360" height="270"
@@ -119,8 +151,8 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Monto a pagar ($)</span>
         </div>
-        <input type="number" min="0" placeholder="" [min]="total" class="form-control" placeholder="0" formControlName="monto"
-          maxlength="16" [ngStyle]="{'border-color': monto.dirty && monto.invalid ? 'red':''}">
+        <input type="number" min="0" placeholder="" [min]="total" class="form-control" placeholder="0"
+          formControlName="monto" maxlength="16" [ngStyle]="{'border-color': monto.touched && monto.invalid ? 'red':''}">
 
         <div class="input-group-append">
           <span class="input-group-text" id="basic-addon1">/ ${{total | number}}</span>
@@ -134,7 +166,7 @@
           <span class="input-group-text" id="basic-addon1">Titular</span>
         </div>
         <input class="form-control" formControlName="titular" type="text" placeholder="Nombre y Apellido"
-          [ngStyle]="{'border-color': titular.dirty && titular.invalid ? 'red':''}">
+          [ngStyle]="{'border-color': titular.touched && titular.invalid ? 'red':''}">
       </div>
       <div class="input-group col-md-4">
         <div class="input-group-prepend">
@@ -142,7 +174,7 @@
         </div>
         <input id="cc-number" class="form-control" formControlName="numeroTarjeta" maxlength="20" type="tel"
           autocomplete="cc-number" ccNumber placeholder="XXXX XXXX XXXX XXXX"
-          [ngStyle]="{'border-color': numeroTarjeta.dirty && numeroTarjeta.invalid ? 'red':''}">
+          [ngStyle]="{'border-color': numeroTarjeta.touched && numeroTarjeta.invalid ? 'red':''}">
       </div>
 
       <div class="input-group col-md-2">
@@ -150,7 +182,7 @@
           <span class="input-group-text" id="basic-addon1">CCV</span>
         </div>
         <input id="cc-cvc" class="form-control" formControlName="ccv" type="tel" autocomplete="off" minlength="3"
-          maxlength="4" ccCvc placeholder="XXX" [ngStyle]="{'border-color': ccv.dirty && ccv.invalid ? 'red':''}">
+          maxlength="4" ccCvc placeholder="XXX" [ngStyle]="{'border-color': ccv.touched && ccv.invalid ? 'red':''}">
       </div>
       <div class="input-group col-md-2">
         <div class="input-group-prepend">
@@ -158,12 +190,25 @@
         </div>
         <input id="cc-exp-date" class="form-control" formControlName="fechaVencimiento" type="tel" autocomplete="cc-exp"
           ccExp placeholder="XX/XXXX"
-          [ngStyle]="{'border-color': fechaVencimiento.dirty && fechaVencimiento.invalid ? 'red':''}">
+          [ngStyle]="{'border-color': fechaVencimiento.touched && fechaVencimiento.invalid ? 'red':''}">
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" [disabled]="formGroup.invalid">Aceptar</button>
+      <button class="btn btn-success" [disabled]="formGroup.invalid">Aceptar</button>
       <button class="btn btn-secondary">Cancelar</button>
     </div>
+    <!-- <p>ciudad:{{ciudad.valid}}</p>
+    <p>numeroCalle:{{numeroCalle.valid}}</p>
+    <p>calle:{{calle.valid}}</p>
+    <p>referencia:{{referencia.valid}}</p>
+    <p>metodoPago:{{metodoPago.valid}}</p>
+    <p>titular:{{titular.valid}}</p>
+    <p>monto:{{monto.valid}}</p>
+    <p>numeroTarjeta:{{numeroTarjeta.valid}}</p>
+    <p>fechaVencimiento:{{fechaVencimiento.valid}}</p>
+    <p> ccv:{{ccv.valid}}</p>
+    <p>entregaRapida:{{entregaRapida.valid}}</p>
+    <p>fechaEntrega:{{fechaEntrega.valid}}</p>
+    <p>horaEntrega:{{horaEntrega.valid}}</p> -->
   </form>
 </div>

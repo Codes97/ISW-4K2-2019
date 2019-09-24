@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ModuleWithComponentFactories } from '@angular/core';
 import { Detalle } from '../model/detalle';
 import { DetalleService } from '../services/detalle.service';
 import { FormBuilder, FormGroup, Validators, } from '@angular/forms';
 import { CreditCardValidator } from 'angular-cc-library';
+
 
 @Component({
   selector: 'app-main',
@@ -11,22 +12,24 @@ import { CreditCardValidator } from 'angular-cc-library';
 })
 export class MainComponent implements OnInit {
 
+  minPickerDate = new Date();
+  total = 100;
+  listaHoras: string[];
 
-  total = 0;
-
-  ciudades = ['Cordoba', 'La Plata', 'Mendoza', 'Rosario'];
+  ciudades = ['Cordoba', 'Villa del Rosario', 'Cosquin', 'Carlos Paz', 'Bialet Masse'];
   formGroup: FormGroup;
   detalles: Detalle[];
-  constructor(private detalleService: DetalleService,
+  constructor(private service: DetalleService,
     private formBuilder: FormBuilder) { }
 
   ngOnInit() {
-    this.detalles = this.detalleService.generateList();
+    this.detalles = this.service.generateList();
 
     this.detalles.forEach(detalle => {
       this.total+=detalle.precio*detalle.cantidad;
     });
     this.total = Math.round(this.total*100)/100;
+    this.listaHoras = this.service.generateHoursList();
 
     this.formGroup = this.formBuilder.group({
       ciudad: ['', Validators.required],
@@ -34,19 +37,28 @@ export class MainComponent implements OnInit {
       calle: ['', [Validators.required]],
       referencia: ['', [Validators.maxLength(300)]],
       metodoPago: ['1'],
-      titular: ['', [Validators.required, Validators.minLength(5)]],
-      monto: ['', [Validators.required, Validators.min(0)]],
-      numeroTarjeta: ['', [Validators.required, CreditCardValidator.validateCCNumber, Validators.pattern(new RegExp('^4[0-9]{3} [0-9]{4} [0-9]{4} [0-9]{1}(?:[0-9]{3})?$'))]],
-      fechaVencimiento: ['', [Validators.required, CreditCardValidator.validateExpDate]],
-      ccv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(4)]],
-      entregaRapida: [false],
-      fechaEntrega: ['', [Validators.required]]
+      titular: ['', [Validators.minLength(5)]],
+      monto: ['', [Validators.required, Validators.min(this.total)]],
+      numeroTarjeta: [''],
+      fechaVencimiento: [''],
+      ccv: [''],
+      entregaRapida: [true],
+      fechaEntrega: [''],
+      horaEntrega: ['']
 
     });
   }
 
+
   volver(){
     location.reload(true);
+  }
+
+  eliminarProducto(detalle){
+    const index = this.detalles.indexOf(detalle);
+    if (index !== -1) {
+        this.detalles.splice(index, 1);
+    }
   }
 
   //Hookeamos cuando cambie el metodo de pago
@@ -82,6 +94,22 @@ export class MainComponent implements OnInit {
       this.ccv.updateValueAndValidity();
   }
 
+  switchEntregaRapida(){
+    this.entregaRapida.setValue(!this.entregaRapida.value);
+
+    if(!this.entregaRapida.value){
+      this.fechaEntrega.clearValidators();
+      this.horaEntrega.clearValidators();
+
+      this.fechaEntrega.setValidators(Validators.required);
+      this.horaEntrega.setValidators(Validators.required);
+    }else{
+      this.fechaEntrega.clearValidators();
+      this.horaEntrega.clearValidators();
+    }
+    this.fechaEntrega.updateValueAndValidity();
+    this.horaEntrega.updateValueAndValidity();
+  }
 
 
   get ciudad(){
@@ -113,6 +141,18 @@ export class MainComponent implements OnInit {
   }
   get ccv(){
     return this.formGroup.get("ccv");
+  }
+  
+  get entregaRapida(){
+    return this.formGroup.get("entregaRapida");
+  }
+  
+  get fechaEntrega(){
+    return this.formGroup.get("fechaEntrega");
+  }
+  
+  get horaEntrega(){
+    return this.formGroup.get("horaEntrega");
   }
 
 }
