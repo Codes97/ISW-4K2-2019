@@ -103,12 +103,12 @@
     <div class="row" style="padding-top: 1%">
       <div class="input-group col-md-3">
         <div class="input-group-prepend">
-          <span class="input-group-text">Entrega inmediata</span>
+          <span class="input-group-text">Lo antes posible</span>
         </div>
         <div class="input-group-append">
           <button class="input-group btn"
             [ngClass]="{'btn-outline-success': entregaRapida.value, 'btn-outline-secondary':!entregaRapida.value}"
-            (click)="switchEntregaRapida()">{{entregaRapida.value ? 'Yes.':'No.'}}</button>
+            (click)="switchEntregaRapida()">{{entregaRapida.value ? 'Si.':'No.'}}</button>
         </div>
 
       </div>
@@ -179,7 +179,7 @@
 
       <div class="input-group col-md-2">
         <div class="input-group-prepend">
-          <span class="input-group-text" id="basic-addon1">CCV</span>
+          <span class="input-group-text" id="basic-addon1">CVC</span>
         </div>
         <input id="cc-cvc" class="form-control" formControlName="ccv" type="tel" autocomplete="off" minlength="3"
           maxlength="4" ccCvc placeholder="XXX" [ngStyle]="{'border-color': ccv.touched && ccv.invalid ? 'red':''}">
